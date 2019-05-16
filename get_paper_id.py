@@ -15,6 +15,7 @@ def get_doi(instr):
     else:
         return
 
+
 def get_identifier(pdf_path):
     identifier = {}
     stream = open(pdf_path, 'rb')
@@ -48,4 +49,3 @@ def get_identifier(pdf_path):
 #
 # for i in pdf_list:
 #     print(get_identifier(i))
-
