@@ -9,6 +9,11 @@ vixra_regex = r"""\[\s?([^\s,]+):viXra"""
 
 
 def get_doi(instr):
+    """
+    返回DOI
+    :param instr: MetaData（大部分期刊均有）
+    :return: doi，形如 '10.1371/journal.pcbi.1004697'
+    """
     match = doi_pattern.search(instr)
     if match:
         return match.group()
@@ -17,6 +22,11 @@ def get_doi(instr):
 
 
 def get_identifier(pdf_path):
+    """
+    返回文献标示符
+    :param pdf_path: pdf地址
+    :return: 标示类型和值，例如'{ 'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
+    """
     identifier = {}
     stream = open(pdf_path, 'rb')
     pdf_stream = pdfparser.PDFParser(stream)
@@ -27,6 +37,7 @@ def get_identifier(pdf_path):
             identifier['doi'] = get_doi(metadata)
             return identifier
         else:
+            identifier['None'] = ""
             return identifier
     else:
         pdf_x = pdfx.PDFx(pdf_path)
@@ -38,9 +49,10 @@ def get_identifier(pdf_path):
         if res:
             arxiv_id = list(set([r.strip(".") for r in res]))[0][::-1]
             arxiv_id = re.sub(r'v([0-9])', '', arxiv_id)
-            identifier['arxiv'] = arxiv_id
+            identifier['arXiv'] = arxiv_id
             return identifier
         else:
+            identifier['None'] = ""
             return identifier
 
 #
