@@ -25,7 +25,7 @@ def get_identifier(pdf_path):
     """
     返回文献标示符
     :param pdf_path: pdf地址
-    :return: 标示类型和值，例如'{ 'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
+    :return: 标示类型和值，例如'{'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
     """
     identifier = {}
     stream = open(pdf_path, 'rb')
