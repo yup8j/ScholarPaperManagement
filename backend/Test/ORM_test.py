@@ -1,4 +1,4 @@
-from model import *
+from views import *
 
 database.connect()
 
