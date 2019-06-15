@@ -53,6 +53,5 @@ class Topic(Document):
 
 
 class API(Resource):
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
         self.response = None
