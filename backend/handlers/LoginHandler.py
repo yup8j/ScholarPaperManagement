@@ -1,6 +1,6 @@
 from mongoengine import *
-from models.db_models import User
-from utils.salt import salt_manager
+from backend.models.db_models import User
+from backend.utils.salt import salt_manager
 from hashlib import md5, sha3_256
 import time
 

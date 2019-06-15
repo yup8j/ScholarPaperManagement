@@ -1,7 +1,7 @@
 from flask import Flask, json, request, make_response, jsonify
 from flask_restful import Resource
-from handlers import LoginHandler
-from models.db_models import API
+from backend.handlers import LoginHandler
+from backend.models.db_models import API
 
 class PreLoginAPI(API):
     """
