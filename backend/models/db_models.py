@@ -21,7 +21,7 @@ class User(Document):
     user_type = StringField()
 
 
-class Metadata(Document):
+class Metadata(EmbeddedDocument):
     title = StringField()
     paper_id = StringField()
     author = ListField()

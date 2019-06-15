@@ -4,6 +4,7 @@ from backend.utils.salt import salt_manager
 from hashlib import md5, sha3_256
 import time
 
+
 def PreLoginHandler(userInfo):
     data = {}
     uname = userInfo['uname']
@@ -24,7 +25,7 @@ def LogHandler(uname, challenge):
     h_real = None
     if salt:
         h_real = md5()
-        h_real.update((password_hash[0]+salt).encode('utf-8'))
+        h_real.update((password_hash[0] + salt).encode('utf-8'))
 
     if challenge == h_real:
         if not salt_manager.delSalt(uname):
