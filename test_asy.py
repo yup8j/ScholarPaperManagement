@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/jobs')
 def run_jobs():
-    executor.submit(some_long_task1)
+    executor.submit(some_long_task1).result()
     executor.submit(some_long_task2, 'hello', 123)
     return 'Two jobs was launched in background!'
 

@@ -1,8 +1,19 @@
+import time
+from time import sleep
 import re
-
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter#process_pdf
+from pdfminer.pdfpage import PDFPage
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from io import StringIO
 import pdfx
 from pdfminer import pdfparser, pdfdocument, pdftypes, converter
+from backend.utils.oss import *
+import requests
+import json
+from concurrent.futures import ThreadPoolExecutor
 
+executor = ThreadPoolExecutor(2)
 doi_pattern = re.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\\b")
 
 vixra_regex = r"""\[\s?([^\s,]+):viXra"""
@@ -28,8 +39,13 @@ def get_identifier(pdf_path):
     :return: 标示类型和值，例如'{'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
     """
     identifier = {}
+    rsrcmgr = PDFResourceManager()
+    sio = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
     stream = open(pdf_path, 'rb')
-    print(type(stream))
     pdf_stream = pdfparser.PDFParser(stream)
     doc = pdfdocument.PDFDocument(pdf_stream, caching=True)
     if 'Metadata' in dict(doc.catalog).keys():
@@ -41,11 +57,14 @@ def get_identifier(pdf_path):
             identifier['None'] = ""
             return identifier
     else:
-        pdf_x = pdfx.PDFx(stream)
-        line = pdf_x.get_text()
+        print(type(stream))
+        print(stream.read())
+        for page in PDFPage.get_pages(stream):
+            interpreter.process_page(page)
+        text = sio.getvalue()
+        line = text
         line = line.replace(' ', '')
         line = line.replace('\n', '')
-
         res = re.findall(vixra_regex, line, re.IGNORECASE)
         if res:
             arxiv_id = list(set([r.strip(".") for r in res]))[0][::-1]
@@ -57,8 +76,8 @@ def get_identifier(pdf_path):
             return identifier
 
 
-pdf_list = [r'1805.03977.pdf', r'osdi16-abadi.pdf', r'1905.06316.pdf', r'2016 Isaure Chauvot de Beauchene.pdf',
-            r'1-s2.0-S136403211630288X-main.pdf']
-
+# pdf_list = [r'1805.03977.pdf', r'osdi16-abadi.pdf', r'1905.06316.pdf', r'2016 Isaure Chauvot de Beauchene.pdf',
+#             r'1-s2.0-S136403211630288X-main.pdf']
+pdf_list =[r'1806.04127.pdf']
 for i in pdf_list:
     print(get_identifier(i))

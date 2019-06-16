@@ -1,11 +1,26 @@
 import time
 from time import sleep
+import re
+from io import BufferedReader
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter  # process_pdf
+from pdfminer.pdfpage import PDFPage
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from io import StringIO
+import pdfx
+from pdfminer import pdfparser, pdfdocument, pdftypes, converter
 from backend.utils.oss import *
 import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
 
 executor = ThreadPoolExecutor(2)
+rsrcmgr = PDFResourceManager()
+sio = StringIO()
+codec = 'utf-8'
+laparams = LAParams()
+device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+interpreter = PDFPageInterpreter(rsrcmgr, device)
 
 
 def upload(stream, user_id, user_name):
@@ -17,11 +32,6 @@ def upload(stream, user_id, user_name):
     sleep(1)
     return 1
 
-
-import re
-
-import pdfx
-from pdfminer import pdfparser, pdfdocument, pdftypes, converter
 
 doi_pattern = re.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\\b")
 
@@ -47,6 +57,13 @@ def get_identifier(stream):
     :return: 标示类型和值，例如'{'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
     """
     identifier = {}
+    identifier = {}
+    rsrcmgr = PDFResourceManager()
+    sio = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
     pdf_stream = pdfparser.PDFParser(stream)
     doc = pdfdocument.PDFDocument(pdf_stream, caching=True)
     if 'Metadata' in dict(doc.catalog).keys():
@@ -56,12 +73,13 @@ def get_identifier(stream):
         else:
             identifier['None'] = ""
     else:
-        pdf_x = pdfx.PDFx(stream)
-        print("1223131231")
-        line = pdf_x.get_text()
+        stream = BufferedReader(stream._file)
+        for page in PDFPage.get_pages(stream):
+            interpreter.process_page(page)
+        text = sio.getvalue()
+        line = text
         line = line.replace(' ', '')
         line = line.replace('\n', '')
-
         res = re.findall(vixra_regex, line, re.IGNORECASE)
         if res:
             arxiv_id = list(set([r.strip(".") for r in res]))[0][::-1]
@@ -69,12 +87,12 @@ def get_identifier(stream):
             identifier['arXiv'] = arxiv_id
         else:
             identifier['None'] = ""
+    print(identifier)
     return identifier
 
 
 def get_metadata(user_id, stream):
     identifier = get_identifier(stream)
-    print(identifier)
     (key, value), = identifier.items()
     rurl = "http://api.semanticscholar.org/v1/paper/"
     final = "?include_unknown_references=TRUE"
