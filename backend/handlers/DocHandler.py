@@ -1,7 +1,8 @@
 import time
 from time import sleep
 from backend.utils.oss import *
-from io import BytesIO
+import requests
+import json
 from concurrent.futures import ThreadPoolExecutor
 
 executor = ThreadPoolExecutor(2)
@@ -56,6 +57,7 @@ def get_identifier(stream):
             identifier['None'] = ""
     else:
         pdf_x = pdfx.PDFx(stream)
+        print("1223131231")
         line = pdf_x.get_text()
         line = line.replace(' ', '')
         line = line.replace('\n', '')
@@ -72,11 +74,28 @@ def get_identifier(stream):
 
 def get_metadata(user_id, stream):
     identifier = get_identifier(stream)
+    print(identifier)
     (key, value), = identifier.items()
+    rurl = "http://api.semanticscholar.org/v1/paper/"
+    final = "?include_unknown_references=TRUE"
+    if key == 'None':
+        return
     if key == 'doi':
-        print("doi")
+        rurl = rurl + value + final
     elif key == 'arXiv':
-        print("arXiv")
-    else:
-        sleep(1)
-    return 1
+        rurl = rurl + "arXiv:" + value + final
+    response = requests.get(url=rurl)
+    json_data = json.loads(response.text)
+    title = json_data['title']
+    paper_id = key + ':' + value
+    author = []
+    for i in list(json_data['authors']):
+        author.append(i['name'])
+    publish_date = json_data['year']
+    topic = []
+    for i in list(json_data['topics']):
+        topic.append(i['topic'])
+    url = json_data['url']
+    print(title, paper_id, author, publish_date, topic, url)
+    print(json_data)
+    return json_data
