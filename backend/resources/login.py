@@ -3,6 +3,7 @@ from flask_restful import Resource
 from backend.handlers import LoginHandler
 from backend.models.db_models import API
 
+
 class PreLoginAPI(API):
     """
     登录过程的第一次握手
@@ -24,6 +25,7 @@ class LoginAPI(API):
     """
     登录过程的第二次握手
     """
+
     def post(self):
         data = json.loads(str(request.data, encoding='utf-8'))
         self.response = make_response()

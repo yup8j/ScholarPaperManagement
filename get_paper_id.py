@@ -1,5 +1,5 @@
 import re
-import json
+
 import pdfx
 from pdfminer import pdfparser, pdfdocument, pdftypes, converter
 
@@ -29,6 +29,7 @@ def get_identifier(pdf_path):
     """
     identifier = {}
     stream = open(pdf_path, 'rb')
+    print(type(stream))
     pdf_stream = pdfparser.PDFParser(stream)
     doc = pdfdocument.PDFDocument(pdf_stream, caching=True)
     if 'Metadata' in dict(doc.catalog).keys():
@@ -40,7 +41,7 @@ def get_identifier(pdf_path):
             identifier['None'] = ""
             return identifier
     else:
-        pdf_x = pdfx.PDFx(pdf_path)
+        pdf_x = pdfx.PDFx(stream)
         line = pdf_x.get_text()
         line = line.replace(' ', '')
         line = line.replace('\n', '')
@@ -55,9 +56,9 @@ def get_identifier(pdf_path):
             identifier['None'] = ""
             return identifier
 
-#
-# pdf_list = [r'1805.03977.pdf', r'osdi16-abadi.pdf', r'1905.06316.pdf', r'2016 Isaure Chauvot de Beauchene.pdf',
-#             r'1-s2.0-S136403211630288X-main.pdf']
-#
-# for i in pdf_list:
-#     print(get_identifier(i))
+
+pdf_list = [r'1805.03977.pdf', r'osdi16-abadi.pdf', r'1905.06316.pdf', r'2016 Isaure Chauvot de Beauchene.pdf',
+            r'1-s2.0-S136403211630288X-main.pdf']
+
+for i in pdf_list:
+    print(get_identifier(i))

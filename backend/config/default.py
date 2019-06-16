@@ -5,7 +5,6 @@ MONGODB_SETTINGS = {'db': 'test_11',
                     'authentication_source': 'admin',
                     'authentication_mechanism': 'SCRAM-SHA-1',
                     'replicaset':'mgset-15064123',
-
                     }  # 设置mongodb的数据库
 
 PASSWORD_SECRET = 'secret_for_ensure_password_security'
