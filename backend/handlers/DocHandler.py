@@ -32,7 +32,7 @@ def upload(stream, user_id, user_name):
     now_path = user_id + '/' + name + '.pdf'
     # get_metadata(user_id,stream)
     #
-    # bucket.put_object(now_path, stream)
+    bucket.put_object(now_path, stream)
     executor.submit(get_metadata, user_id, stream, name)
     sleep(2)
 
@@ -132,6 +132,7 @@ def get_metadata(user_id, stream, name):
         for one_topic in topic:
             topic_id.append(str(Topic.objects.get(topic_name=one_topic).id))
         # topic_id:为列表
+        print(topic_id)
         # document
         new_metadata = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date),
                                 publish_source='-', link_url=url, user_score=0)
@@ -139,7 +140,8 @@ def get_metadata(user_id, stream, name):
         new_document.save()
         new_document_id = new_document.id
         # 回到topic插入
-
+        for tid in topic_id:
+            Topic.objects(id=tid).update_one(push__doc_list=new_document_id)
         return json_data
     else:
         # 实在抓不到了
