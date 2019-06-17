@@ -27,10 +27,11 @@ def upload(stream, user_id, user_name):
     time_stamp = str(int(time.time()))
     name = user_name + '_' + time_stamp
     now_path = user_id + '/' + name + '.pdf'
-    executor.submit(get_metadata, user_id, stream)
+    # get_metadata(user_id,stream)
+    #
     # bucket.put_object(now_path, stream)
-    sleep(1)
-    return 1
+    executor.submit(get_metadata, user_id, stream)
+    sleep(2)
 
 
 doi_pattern = re.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\\b")
@@ -73,47 +74,52 @@ def get_identifier(stream):
         else:
             identifier['None'] = ""
     else:
-        stream = BufferedReader(stream._file)
-        for page in PDFPage.get_pages(stream):
-            interpreter.process_page(page)
-        text = sio.getvalue()
-        line = text
-        line = line.replace(' ', '')
-        line = line.replace('\n', '')
-        res = re.findall(vixra_regex, line, re.IGNORECASE)
-        if res:
-            arxiv_id = list(set([r.strip(".") for r in res]))[0][::-1]
-            arxiv_id = re.sub(r'v([0-9])', '', arxiv_id)
-            identifier['arXiv'] = arxiv_id
-        else:
-            identifier['None'] = ""
-    print(identifier)
+        try:
+            stream = BufferedReader(stream._file)
+            for page in PDFPage.get_pages(stream):
+                interpreter.process_page(page)
+            text = sio.getvalue()
+            line = text
+            line = line.replace(' ', '')
+            line = line.replace('\n', '')
+            res = re.findall(vixra_regex, line, re.IGNORECASE)
+            if res:
+                arxiv_id = list(set([r.strip(".") for r in res]))[0][::-1]
+                arxiv_id = re.sub(r'v([0-9])', '', arxiv_id)
+                identifier['arXiv'] = arxiv_id
+            else:
+                identifier['None'] = ""
+        except:
+            return ""
     return identifier
 
 
 def get_metadata(user_id, stream):
     identifier = get_identifier(stream)
-    (key, value), = identifier.items()
-    rurl = "http://api.semanticscholar.org/v1/paper/"
-    final = "?include_unknown_references=TRUE"
-    if key == 'None':
-        return
-    if key == 'doi':
-        rurl = rurl + value + final
-    elif key == 'arXiv':
-        rurl = rurl + "arXiv:" + value + final
-    response = requests.get(url=rurl)
-    json_data = json.loads(response.text)
-    title = json_data['title']
-    paper_id = key + ':' + value
-    author = []
-    for i in list(json_data['authors']):
-        author.append(i['name'])
-    publish_date = json_data['year']
-    topic = []
-    for i in list(json_data['topics']):
-        topic.append(i['topic'])
-    url = json_data['url']
-    print(title, paper_id, author, publish_date, topic, url)
-    print(json_data)
-    return json_data
+    if identifier:
+        (key, value), = identifier.items()
+        rurl = "http://api.semanticscholar.org/v1/paper/"
+        final = "?include_unknown_references=TRUE"
+        if key == 'None':
+            return
+        if key == 'doi':
+            rurl = rurl + value + final
+        elif key == 'arXiv':
+            rurl = rurl + "arXiv:" + value + final
+        response = requests.get(url=rurl)
+        json_data = json.loads(response.text)
+        title = json_data['title']
+        paper_id = key + ':' + value
+        author = []
+        for i in list(json_data['authors']):
+            author.append(i['name'])
+        publish_date = json_data['year']
+        topic = []
+        for i in list(json_data['topics']):
+            topic.append(i['topic'])
+        url = json_data['url']
+        print(title, paper_id, author, publish_date, topic, url)
+        return json_data
+    else:
+        # 实在抓不到了
+        print("Hello world")
