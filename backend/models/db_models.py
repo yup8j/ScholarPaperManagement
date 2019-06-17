@@ -24,10 +24,11 @@ class Metadata(EmbeddedDocument):
 
 class Documents(Document):
     _id = StringField()
-    owner_id = StringField()
+    owner_id = ObjectIdField()
     metadata = EmbeddedDocumentField(Metadata)
     color = IntField()
     topic = ListField()
+    save_name = StringField()
 
 
 class Library(Document):

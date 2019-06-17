@@ -13,6 +13,8 @@ from backend.utils.oss import *
 import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
+from backend.models.db_models import Documents
+from backend.models.db_models import Metadata
 
 executor = ThreadPoolExecutor(2)
 rsrcmgr = PDFResourceManager()
@@ -30,7 +32,7 @@ def upload(stream, user_id, user_name):
     # get_metadata(user_id,stream)
     #
     # bucket.put_object(now_path, stream)
-    executor.submit(get_metadata, user_id, stream)
+    executor.submit(get_metadata, user_id, stream, name)
     sleep(2)
 
 
@@ -57,7 +59,6 @@ def get_identifier(stream):
     返回文献标示符
     :return: 标示类型和值，例如'{'arXiv': '1805.03977'}, {'doi': '10.1016/j.rser.2016.06.056'}, {'None': ''}'
     """
-    identifier = {}
     identifier = {}
     rsrcmgr = PDFResourceManager()
     sio = StringIO()
@@ -94,7 +95,7 @@ def get_identifier(stream):
     return identifier
 
 
-def get_metadata(user_id, stream):
+def get_metadata(user_id, stream, name):
     identifier = get_identifier(stream)
     if identifier:
         (key, value), = identifier.items()
@@ -119,6 +120,15 @@ def get_metadata(user_id, stream):
             topic.append(i['topic'])
         url = json_data['url']
         print(title, paper_id, author, publish_date, topic, url)
+        try:
+            new_meta = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date), link_url=url,
+                                user_score=0)
+            new_doc = Documents(owner_id=user_id, color=0, metadata=new_meta)
+            new_doc.color = 0
+            new_doc.metadata = new_meta
+            new_doc.save()
+        except Exception as e:
+            print(str(e))
         return json_data
     else:
         # 实在抓不到了
