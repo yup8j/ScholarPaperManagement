@@ -1,6 +1,7 @@
 import time
 from time import sleep
 import re
+import mongoengine
 from io import BufferedReader
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter  # process_pdf
 from pdfminer.pdfpage import PDFPage
@@ -13,7 +14,7 @@ from backend.utils.oss import *
 import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
-from backend.models.db_models import Documents
+from backend.models.db_models import Documents, Topic
 from backend.models.db_models import Metadata
 
 executor = ThreadPoolExecutor(2)
@@ -116,19 +117,29 @@ def get_metadata(user_id, stream, name):
             author.append(i['name'])
         publish_date = json_data['year']
         topic = []
+        topic_id = []
         for i in list(json_data['topics']):
             topic.append(i['topic'])
+        topic.append("test_topic")
         url = json_data['url']
         print(title, paper_id, author, publish_date, topic, url)
-        try:
-            new_meta = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date), link_url=url,
-                                user_score=0)
-            new_doc = Documents(owner_id=user_id, color=0, metadata=new_meta)
-            new_doc.color = 0
-            new_doc.metadata = new_meta
-            new_doc.save()
-        except Exception as e:
-            print(str(e))
+        # topic
+        for one_topic in topic:
+            try:
+                Topic(topic_name=one_topic).save()
+            except mongoengine.errors.NotUniqueError:
+                continue
+        for one_topic in topic:
+            topic_id.append(str(Topic.objects.get(topic_name=one_topic).id))
+        # topic_id:为列表
+        # document
+        new_metadata = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date),
+                                publish_source='-', link_url=url, user_score=0)
+        new_document = Documents(owner_id=user_id, metadata=new_metadata, color=0, topic=topic_id, save_name=name)
+        new_document.save()
+        new_document_id = new_document.id
+        # 回到topic插入
+
         return json_data
     else:
         # 实在抓不到了

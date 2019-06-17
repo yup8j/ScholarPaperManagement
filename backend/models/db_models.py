@@ -23,7 +23,6 @@ class Metadata(EmbeddedDocument):
 
 
 class Documents(Document):
-    _id = StringField()
     owner_id = ObjectIdField()
     metadata = EmbeddedDocumentField(Metadata)
     color = IntField()
@@ -32,15 +31,13 @@ class Documents(Document):
 
 
 class Library(Document):
-    _id = StringField()
     owner_id = StringField()
     lib_name = StringField()
     doc_list = ListField()
 
 
 class Topic(Document):
-    _id = StringField()
-    topic_name = StringField()
+    topic_name = StringField(unique=True)
     doc_list = ListField()
 
 
