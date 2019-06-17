@@ -1,29 +1,6 @@
-import time
-from time import sleep
-import re
-import mongoengine
-from io import BufferedReader
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter  # process_pdf
-from pdfminer.pdfpage import PDFPage
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from io import StringIO
-import pdfx
-from pdfminer import pdfparser, pdfdocument, pdftypes, converter
-from backend.utils.oss import *
-import requests
-import json
-from concurrent.futures import ThreadPoolExecutor
-from backend.models.db_models import Documents, Topic
-from backend.models.db_models import Metadata
+from backend.handlers import *
 
 executor = ThreadPoolExecutor(2)
-rsrcmgr = PDFResourceManager()
-sio = StringIO()
-codec = 'utf-8'
-laparams = LAParams()
-device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
-interpreter = PDFPageInterpreter(rsrcmgr, device)
 
 
 def upload(stream, user_id, user_name):
@@ -32,9 +9,17 @@ def upload(stream, user_id, user_name):
     now_path = user_id + '/' + name + '.pdf'
     # get_metadata(user_id,stream)
     #
-    bucket.put_object(now_path, stream)
-    executor.submit(get_metadata, user_id, stream, name)
-    sleep(2)
+    try:
+        bucket.put_object(now_path, stream)
+        code = 200
+    except:
+        code = 403
+    code = 200
+    if code == 200:
+        doc_id = executor.submit(get_metadata, user_id, stream, name).result()
+        return {"id": str(doc_id)}, code
+    else:
+        return "", code
 
 
 doi_pattern = re.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\\b")
@@ -103,7 +88,14 @@ def get_metadata(user_id, stream, name):
         rurl = "http://api.semanticscholar.org/v1/paper/"
         final = "?include_unknown_references=TRUE"
         if key == 'None':
-            return
+            try:
+                new_document = Documents(owner_id=user_id, save_name=name)
+                new_metadata = Metadata(title=str(name))
+                new_document.metadata = new_metadata
+                new_document.save()
+                return new_document.id
+            except Exception as e:
+                print(str(e))
         if key == 'doi':
             rurl = rurl + value + final
         elif key == 'arXiv':
@@ -122,7 +114,6 @@ def get_metadata(user_id, stream, name):
             topic.append(i['topic'])
         topic.append("test_topic")
         url = json_data['url']
-        print(title, paper_id, author, publish_date, topic, url)
         # topic
         for one_topic in topic:
             try:
@@ -131,8 +122,6 @@ def get_metadata(user_id, stream, name):
                 continue
         for one_topic in topic:
             topic_id.append(str(Topic.objects.get(topic_name=one_topic).id))
-        # topic_id:为列表
-        print(topic_id)
         # document
         new_metadata = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date),
                                 publish_source='-', link_url=url, user_score=0)
@@ -142,7 +131,6 @@ def get_metadata(user_id, stream, name):
         # 回到topic插入
         for tid in topic_id:
             Topic.objects(id=tid).update_one(push__doc_list=new_document_id)
-        return json_data
+        return new_document_id
     else:
-        # 实在抓不到了
-        print("Hello world")
+        return

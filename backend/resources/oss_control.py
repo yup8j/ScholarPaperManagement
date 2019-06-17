@@ -13,8 +13,20 @@ class UploadDocuments(API):
 
     def post(self):
         parse = reqparse.RequestParser()
+        self.response = make_response()
         parse.add_argument('data', type=werkzeug.datastructures.FileStorage, location='files')
         args = parse.parse_args()
         stream = args['data'].stream
-        upload(stream=stream, user_id='5cf0c31890f43a4e53492b34', user_name='testname')
-        return "helloworld"
+        j, c = upload(stream=stream, user_id='5cf0c31890f43a4e53492b34', user_name='testname')
+        self.response.status_code = c
+        if c == 200:
+            self.response = jsonify(j)
+        return self.response
+
+
+# class DownloadDocuments(API):
+#     """
+#     下载文献
+#     """
+#     def get(self):
+
