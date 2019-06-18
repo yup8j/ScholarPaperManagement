@@ -3,8 +3,9 @@ from flask_restful import reqparse
 import werkzeug.datastructures
 from flask import Flask, json, request, make_response, jsonify, send_file
 from backend.utils.oss import auth, bucket
-from backend.handlers.DocHandler import upload, download
+from backend.handlers.DocHandler import upload, download, delete_document
 import io
+
 
 class UploadDocuments(API):
     """
@@ -39,3 +40,18 @@ class DownloadDocuments(API):
             mimetype='application/pdf',
             as_attachment=True,
             attachment_filename='%s.pdf' % doc_name)
+
+
+class DeleteDocuments(API):
+    """
+    彻底删除文献
+    """
+
+    def post(self, document_id):
+        delete_document(document_id=document_id, user_id='5cf0c31890f43a4e53492b34')
+        return "helloworld"
+
+# class GetNote(API):
+#     """
+#     如果有，则取回，如果没有，则新建
+#     """
