@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_restful import Api
 from backend.resources.login import *
 from backend.resources.oss_control import *
+from backend.resources.edit_info import *
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
