@@ -15,4 +15,4 @@ import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
 from backend.models.db_models import Documents, Topic
-from backend.models.db_models import Metadata
+from backend.models.db_models import Metadata, User

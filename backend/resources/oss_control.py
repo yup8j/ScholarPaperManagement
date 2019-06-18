@@ -44,8 +44,3 @@ class DeleteDocuments(API):
     def post(self, document_id):
         delete_document(document_id=document_id, user_id='5cf0c31890f43a4e53492b34')
         return "helloworld"
-
-# class GetNote(API):
-#     """
-#     如果有，则取回，如果没有，则新建
-#     """

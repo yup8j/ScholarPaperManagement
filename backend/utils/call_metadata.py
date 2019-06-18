@@ -120,7 +120,8 @@ def get_metadata(user_id, stream, name):
         # document
         new_metadata = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date),
                                 publish_source='-', link_url=url, user_score=0)
-        new_document = Documents(owner_id=user_id, metadata=new_metadata, color=0, topic=topic_id, save_name=name)
+        new_document = Documents(owner_id=user_id, metadata=new_metadata, color=0, topic=topic_id, save_name=name,
+                                 save_note=0)
         new_document.save()
         new_document_id = new_document.id
         # 回到topic插入

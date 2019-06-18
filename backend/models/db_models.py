@@ -3,9 +3,7 @@ from mongoengine import *
 from flask_restful import Resource
 
 
-
 class User(Document):
-    _id = StringField()
     username = StringField()
     password_hash = StringField()
     doc_amount = IntField()
@@ -28,6 +26,7 @@ class Documents(Document):
     color = IntField()
     topic = ListField()
     save_name = StringField()
+    save_note = IntField()
 
 
 class Library(Document):
