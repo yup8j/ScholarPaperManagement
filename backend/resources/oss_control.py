@@ -1,10 +1,10 @@
 from backend.models.db_models import API
 from flask_restful import reqparse
 import werkzeug.datastructures
-from flask import Flask, json, request, make_response, jsonify
+from flask import Flask, json, request, make_response, jsonify, send_file
 from backend.utils.oss import auth, bucket
-from backend.handlers.DocHandler import upload,download
-
+from backend.handlers.DocHandler import upload, download
+import io
 
 class UploadDocuments(API):
     """
@@ -28,7 +28,14 @@ class DownloadDocuments(API):
     """
     下载文献
     """
+
     def get(self, document_id):
-        print(document_id)
-        download(document_id)
-        print("123")
+        doc_name, doc_stream = download(document_id, user_id='5cf0c31890f43a4e53492b34')
+        # response = make_response(doc_stream)
+        # response.headers.set('Content-Type', 'application/pdf')
+        # return response
+        return send_file(
+            io.BytesIO(doc_stream.read()),
+            mimetype='application/pdf',
+            as_attachment=True,
+            attachment_filename='%s.pdf' % doc_name)

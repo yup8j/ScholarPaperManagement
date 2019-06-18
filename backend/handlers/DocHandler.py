@@ -1,6 +1,7 @@
 from backend.handlers import *
 from backend.utils.call_metadata import get_metadata
 from backend.models.db_models import Documents
+
 executor = ThreadPoolExecutor(2)
 
 
@@ -11,7 +12,7 @@ def upload(stream, user_id, user_name):
     # get_metadata(user_id,stream)
     #
     try:
-        bucket.put_object(now_path, stream)
+        # bucket.put_object(now_path, stream)
         code = 200
     except:
         code = 403
@@ -22,6 +23,7 @@ def upload(stream, user_id, user_name):
         return "", code
 
 
-def download(document_id):
-    doc_name = Documents.objects(id=str(document_id))
-    print(doc_name)
+def download(document_id, user_id):
+    doc_name = Documents.objects(id=str(document_id)).first().save_name
+    object_stream = bucket.get_object(user_id + '/' + doc_name + '.pdf')
+    return doc_name,object_stream
