@@ -3,7 +3,7 @@ from flask_restful import reqparse
 import werkzeug.datastructures
 from flask import Flask, json, request, make_response, jsonify
 from backend.utils.oss import auth, bucket
-from backend.handlers.DocHandler import upload
+from backend.handlers.DocHandler import upload,download
 
 
 class UploadDocuments(API):
@@ -24,9 +24,11 @@ class UploadDocuments(API):
         return self.response
 
 
-# class DownloadDocuments(API):
-#     """
-#     下载文献
-#     """
-#     def get(self):
-
+class DownloadDocuments(API):
+    """
+    下载文献
+    """
+    def get(self, document_id):
+        print(document_id)
+        download(document_id)
+        print("123")
