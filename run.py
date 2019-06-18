@@ -3,6 +3,7 @@ from backend.app import api_bp
 from backend.models import register_database
 from mongoengine import connect
 
+
 def create_app(**config):
     app = Flask(__name__)
     register_config(app, config)
@@ -32,5 +33,6 @@ def register_routes(app):
     app.register_blueprint(api_bp)
 
 
+application = create_app(debug=True)
 if __name__ == '__main__':
-    create_app(debug=True).run()
+    application.run()

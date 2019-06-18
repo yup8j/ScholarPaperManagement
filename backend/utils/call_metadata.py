@@ -14,7 +14,7 @@ from backend.utils.oss import *
 import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
-from backend.models.db_models import Documents, Topic
+from backend.models.db_models import Documents, Topic, User
 from backend.models.db_models import Metadata
 
 doi_pattern = re.compile("\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>])\S)+)\\b")
@@ -109,7 +109,15 @@ def get_metadata(user_id, stream, name):
             topic.append(i['topic'])
         topic.append("test_topic")
         url = json_data['url']
-        # topic
+        # user_info
+        user = User.objects(id=user_id).first()
+        user_type = user.user_type
+        user_doc_amount = user.doc_amount
+        user_doc_amount += 1
+        if not user_type == 'advanced':
+            if user_doc_amount > 10:
+                return 'Full'
+        user.update(doc_amount=user_doc_amount)
         for one_topic in topic:
             try:
                 Topic(topic_name=one_topic).save()
@@ -129,4 +137,4 @@ def get_metadata(user_id, stream, name):
             Topic.objects(id=tid).update_one(push__doc_list=new_document_id)
         return new_document_id
     else:
-        return
+        return 'Error'

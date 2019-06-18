@@ -17,6 +17,8 @@ def upload(stream, user_id, user_name):
         code = 403
     if code == 200:
         doc_id = executor.submit(get_metadata, user_id, stream, name).result()
+        if doc_id == 'Full' or doc_id == 'Error':
+            code = 403
         return {"id": str(doc_id)}, code
     else:
         return "", code
@@ -33,6 +35,10 @@ def delete_document(document_id, user_id):
     doc_name = delete_doc.save_name
     doc_id = delete_doc.id
     topic_id = delete_doc.topic
+    user = User.objects(id=user_id).first()
+    user_doc_amount = user.doc_amount
+    user_doc_amount -= 1
+    user.update(doc_amount=user_doc_amount)
     try:
         for topic in topic_id:
             delete_topic = Topic.objects(id=str(topic))
@@ -47,4 +53,3 @@ def delete_document(document_id, user_id):
         print(str(e))
         code = 403
     return code
-
