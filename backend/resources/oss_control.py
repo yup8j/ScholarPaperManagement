@@ -40,7 +40,17 @@ class DeleteDocuments(API):
     """
     彻底删除文献
     """
-
-    def post(self, document_id):
-        delete_document(document_id=document_id, user_id='5cf0c31890f43a4e53492b34')
-        return "helloworld"
+    # TODO：完善lib相关部分的删除
+    def post(self):
+        parse = reqparse.RequestParser()
+        parse.add_argument('document_id', type=str)
+        args = parse.parse_args()
+        document_id = args['document_id']
+        self.response = make_response()
+        try:
+            delete_document(document_id=document_id, user_id='5cf0c31890f43a4e53492b34')
+            self.response.status_code = 200
+        except Exception as e:
+            print(str(e))
+            self.response.status_code = 403
+        return self.response
