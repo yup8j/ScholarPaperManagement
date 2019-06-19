@@ -12,6 +12,7 @@ class GetInfo(API):
         :return:
         """
         ''' 用户鉴权：获得userid '''
+        request.get_json(force=True)
         userid = get_jwt_identity()
 
         ''' 获取参数中的document_id '''

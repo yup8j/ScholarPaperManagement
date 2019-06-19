@@ -5,6 +5,7 @@ import os
 def get_note(document_id, user_id):
     user = User.objects(id=str(user_id)).first()
     user_name = user.username
+    print(document_id)
     doc = Documents.objects(id=str(document_id)).first()
     doc_name = doc.save_name
     note_flag = doc.save_note
@@ -30,7 +31,6 @@ def save_note(document_id, user_id, note_content):
     user = User.objects(id=str(user_id)).first()
     user_name = user.username
     doc = Documents.objects(id=str(document_id)).first()
-    print(doc)
     doc_name = doc.save_name
     path = './' + 'md/' + user_name
     with open('./md/' + user_name + '/' + doc_name + '.md', 'a+') as f:

@@ -9,4 +9,4 @@ from flask import Flask, json, request, make_response, jsonify
 from flask_restful import Resource
 from backend.handlers import LoginHandler
 from backend.models.db_models import API
-
+from flask_jwt_extended import jwt_required, get_jwt_identity

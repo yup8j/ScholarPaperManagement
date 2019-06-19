@@ -3,6 +3,7 @@ from mongoengine import Q
 
 
 def getInfo(userid, doc_id):
+    print("Doc id {}".format(doc_id))
     docQuery = Documents.objects(Q(id=doc_id) & Q(owner_id=userid)).first()
     if docQuery == None:
         print("Document not exists!")
