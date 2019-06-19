@@ -1,4 +1,4 @@
-#-*-coding:utf-8 -*-
+# -*-coding:utf-8 -*-
 import random
 import string
 
@@ -7,6 +7,7 @@ def generateRandomStr(len):
     strList = [random.choice(string.digits + string.ascii_letters) for i in range(len)]
     randomStr = "".join(strList)
     return randomStr
+
 
 class Salt:
     def __init__(self):
@@ -31,5 +32,6 @@ class Salt:
             return True
         else:
             return False
+
 
 salt_manager = Salt()

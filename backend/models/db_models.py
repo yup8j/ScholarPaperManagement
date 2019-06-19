@@ -13,7 +13,7 @@ class User(Document):
 class Metadata(EmbeddedDocument):
     title = StringField()
     paper_id = StringField()
-    author = ListField()
+    author = ListField(StringField())
     publish_date = StringField()
     publish_source = StringField()
     link_url = URLField()
@@ -24,7 +24,7 @@ class Documents(Document):
     owner_id = ObjectIdField()
     metadata = EmbeddedDocumentField(Metadata)
     color = IntField()
-    topic = ListField()
+    topic = ListField(ObjectIdField())
     save_name = StringField()
     save_note = IntField()
 
@@ -32,12 +32,12 @@ class Documents(Document):
 class Library(Document):
     owner_id = StringField()
     lib_name = StringField()
-    doc_list = ListField()
+    doc_list = ListField(ObjectIdField())
 
 
 class Topic(Document):
     topic_name = StringField(unique=True)
-    doc_list = ListField()
+    doc_list = ListField(ObjectIdField())
 
 
 class API(Resource):

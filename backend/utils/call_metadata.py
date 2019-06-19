@@ -100,7 +100,7 @@ def get_metadata(user_id, stream, name):
                 print(str(e))
         url = ''
         if key == 'doi':
-            url = 'https://dx.doi.org/'+value
+            url = 'https://dx.doi.org/' + value
             rurl = rurl + value + final
         elif key == 'arXiv':
             url = 'https://arxiv.org/abs/' + value
@@ -108,6 +108,11 @@ def get_metadata(user_id, stream, name):
         response = requests.get(url=rurl)
         json_data = json.loads(response.text)
         title = json_data['title']
+        try:
+            source = json_data['venue']
+        except Exception as e:
+            print(str(e))
+            source = '-'
         paper_id = key + ':' + value
         author = []
         for i in list(json_data['authors']):
@@ -136,7 +141,7 @@ def get_metadata(user_id, stream, name):
             topic_id.append(str(Topic.objects.get(topic_name=one_topic).id))
         # document
         new_metadata = Metadata(title=title, paper_id=paper_id, author=author, publish_date=str(publish_date),
-                                publish_source='-', link_url=url, user_score=0)
+                                publish_source=source, link_url=url, user_score=0)
         new_document = Documents(owner_id=user_id, metadata=new_metadata, color=0, topic=topic_id, save_name=name,
                                  save_note=0)
         new_document.save()
