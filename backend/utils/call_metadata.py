@@ -98,9 +98,12 @@ def get_metadata(user_id, stream, name):
                 return new_document.id
             except Exception as e:
                 print(str(e))
+        url = ''
         if key == 'doi':
+            url = 'https://dx.doi.org/'+value
             rurl = rurl + value + final
         elif key == 'arXiv':
+            url = 'https://arxiv.org/abs/' + value
             rurl = rurl + "arXiv:" + value + final
         response = requests.get(url=rurl)
         json_data = json.loads(response.text)
@@ -115,7 +118,6 @@ def get_metadata(user_id, stream, name):
         for i in list(json_data['topics']):
             topic.append(i['topic'])
         topic.append("test_topic")
-        url = json_data['url']
         # user_info
         user = User.objects(id=user_id).first()
         user_type = user.user_type
