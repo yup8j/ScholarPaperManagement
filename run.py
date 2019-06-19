@@ -9,6 +9,7 @@ def create_app(**config):
     register_config(app, config)
     register_database(app)
     register_routes(app)
+    register_jwt(app)
     return app
 
 
@@ -31,6 +32,13 @@ def register_config(app, config):
 
 def register_routes(app):
     app.register_blueprint(api_bp)
+
+
+def register_jwt(app):
+    from backend.resources.login import jwt
+    from backend.utils.salt import salt_manager
+    app.config['SECRET_KEY'] = salt_manager.getNewSalt('SECRET_KEY')
+    jwt.init_app(app)
 
 
 application = create_app(debug=True)

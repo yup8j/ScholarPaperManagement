@@ -1,6 +1,7 @@
-from flask import request, make_response
 from mongoengine import *
 from flask_restful import Resource
+from backend.utils.salt import salt_manager
+from hashlib import md5, sha3_256
 
 
 class User(Document):
