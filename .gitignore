@@ -1,5 +1,4 @@
 .idea/
 *.pdf
 venv/
-*.pyc
 *.md
