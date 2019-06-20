@@ -30,10 +30,10 @@ def LogHandler(uname, challenge):
         salt = salt_manager.matchSalt(uname)
         h_real = None
         if salt:
-            h_real = md5((password_hash + salt).encode('utf-8'))
-            print(h_real.hexdigest())
+            h_real = md5((password_hash + salt).encode('utf-8')).hexdigest()
+            print(h_real)
 
-        challenge = h_real  # 应用时请注释！
+        # challenge = h_real  # 应用时请注释！
         if challenge == h_real:
             # 认证成功
             if not salt_manager.delSalt(uname):
