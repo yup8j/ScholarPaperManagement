@@ -107,6 +107,22 @@ def get_metadata(user_id, stream, name):
             rurl = rurl + "arXiv:" + value + final
         response = requests.get(url=rurl)
         json_data = json.loads(response.text)
+        if json_data['error']:
+            try:
+                user = User.objects(id=user_id).first()
+                user_type = user.user_type
+                user_doc_amount = user.doc_amount
+                user_doc_amount += 1
+                if not user_type == 'advanced':
+                    if user_doc_amount > 10:
+                        return 'Full'
+                new_document = Documents(owner_id=user_id, save_name=name, color=0, save_note=0)
+                new_metadata = Metadata(title=str(name), user_score=0)
+                new_document.metadata = new_metadata
+                new_document.save()
+                return new_document.id
+            except Exception as e:
+                print(str(e))
         title = json_data['title']
         try:
             source = json_data['venue']
