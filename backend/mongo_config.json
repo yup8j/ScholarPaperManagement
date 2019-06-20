@@ -1,9 +1,0 @@
-{
-    "host": "mongodb://dds-wz9f23f0cffe4b341504-pub.mongodb.rds.aliyuncs.com:3717,dds-wz9f23f0cffe4b342338-pub.mongodb.rds.aliyuncs.com:3717",
-    "username": "root",
-    "password": "qwerty2019()-=",
-    "authentication_source": "admin",
-    "replicase": "mgset-15064123",
-    "db": "test_11"
-}
-
