@@ -20,3 +20,21 @@ class AddLib(API):
         new_lib_id, code = add_lib(user_id=user_id, lib_name=lib_name)
         self.response.code = code
         return self.response
+
+
+class DeleteLib(API):
+    @jwt_required
+    def post(self):
+        """
+        删除分类
+        :return:
+        """
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        request.get_json(force=True)
+        parse = reqparse.RequestParser()
+        parse.add_argument('lib_id', type=str)
+        args = parse.parse_args()
+        lib_id = args['lib_id']
+        self.response.code = delete_lib(user_id=user_id, lib_id=lib_id)
+        return self.response

@@ -31,7 +31,7 @@ class Documents(Document):
 
 
 class Library(Document):
-    owner_id = StringField()
+    owner_id = ObjectIdField()
     lib_name = StringField()
     doc_list = ListField(ObjectIdField())
 
