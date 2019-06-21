@@ -73,3 +73,18 @@ class GetDocsInLib(API):
         self.response.code = c
         self.response = jsonify(j)
         return self.response
+
+
+class GetReadLater(API):
+    """
+    查看待读列表
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        j, c = get_read_later(user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response

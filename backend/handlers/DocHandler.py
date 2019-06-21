@@ -1,6 +1,6 @@
 from backend.handlers import *
 from backend.utils.call_metadata import get_metadata
-from backend.models.db_models import Documents
+from backend.models.db_models import Documents,Library
 
 executor = ThreadPoolExecutor(4)
 
@@ -35,6 +35,7 @@ def delete_document(document_id, user_id):
     doc_name = delete_doc.save_name
     doc_id = delete_doc.id
     topic_id = delete_doc.topic
+    lib_id = delete_doc.lib
     user = User.objects(id=user_id).first()
     user_doc_amount = user.doc_amount
     user_doc_amount -= 1
@@ -43,6 +44,12 @@ def delete_document(document_id, user_id):
         for topic in topic_id:
             delete_topic = Topic.objects(id=str(topic))
             delete_topic.update_one(pull__doc_list=doc_id)
+    except Exception as e:
+        print(str(e))
+    try:
+        for lib in lib_id:
+            delete_lib = Library.objects(id=lib)
+            delete_lib.update_one(pull__doc_list=doc_id)
     except Exception as e:
         print(str(e))
     delete_doc.delete()

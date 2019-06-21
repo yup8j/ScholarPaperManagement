@@ -53,7 +53,6 @@ class DeleteDocuments(API):
         parse.add_argument('document_id', type=str)
         args = parse.parse_args()
         document_id = args['document_id']
-        print(document_id)
         self.response = make_response()
         try:
             delete_document(document_id=document_id, user_id=user_id)

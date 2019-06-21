@@ -1,5 +1,6 @@
 from backend.models.db_models import Library, User, Documents
 import json
+from mongoengine import Q
 
 
 def add_lib(user_id, lib_name):
@@ -129,3 +130,13 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
                  zip(list_of_doc, title_list, mark_list, fst_author_list, source_list, publish_year_list)]
         my_response = {'docs': final}
         return my_response, 200
+
+
+def get_read_later(user_id):
+    try:
+        lib_query = Library.objects(Q(lib_name="待读列表") & Q(owner_id=user_id)).first()
+        j, c = get_docs_in_lib(user_id=user_id, lib_id=lib_query.id, lib_type=0)
+        return j, c
+    except Exception as e:
+        print(str(e))
+        return '', 403
