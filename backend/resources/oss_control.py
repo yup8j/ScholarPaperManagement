@@ -28,6 +28,7 @@ class DownloadDocuments(API):
     @jwt_required
     def get(self, document_id):
         user_id = get_jwt_identity()
+        print("docid{}".format(document_id))
         doc_name, doc_stream = download(document_id, user_id=user_id)
         # response = make_response(doc_stream)
         # response.headers.set('Content-Type', 'application/pdf')
