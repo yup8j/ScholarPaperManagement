@@ -1,7 +1,6 @@
 from mongoengine import *
 from flask_restful import Resource
-from backend.utils.salt import salt_manager
-from hashlib import md5, sha3_256
+
 
 
 class User(Document):
@@ -28,6 +27,7 @@ class Documents(Document):
     topic = ListField(ObjectIdField())
     save_name = StringField()
     save_note = IntField()
+    lib = ListField(ObjectIdField())
 
 
 class Library(Document):
