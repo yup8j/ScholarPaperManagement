@@ -2,7 +2,6 @@ from mongoengine import *
 from flask_restful import Resource
 
 
-
 class User(Document):
     username = StringField()
     password_hash = StringField()
