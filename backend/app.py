@@ -4,6 +4,7 @@ from backend.resources.login import *
 from backend.resources.oss_control import *
 from backend.resources.notes import *
 from backend.resources.info import *
+from backend.resources.lib import *
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
@@ -15,3 +16,4 @@ api.add_resource(DeleteDocuments, '/removedoc')
 api.add_resource(GetNote, '/getnote')
 api.add_resource(SaveNote, '/savenote')
 api.add_resource(GetInfo, '/getinfo')
+api.add_resource(AddLib, '/addlib')

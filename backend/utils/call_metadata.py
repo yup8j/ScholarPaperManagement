@@ -107,7 +107,7 @@ def get_metadata(user_id, stream, name):
             rurl = rurl + "arXiv:" + value + final
         response = requests.get(url=rurl)
         json_data = json.loads(response.text)
-        if json_data['error']:
+        if 'error' in dict(json_data):
             try:
                 user = User.objects(id=user_id).first()
                 user_type = user.user_type

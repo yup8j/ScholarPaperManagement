@@ -5,7 +5,8 @@ from flask_restful import Resource
 class User(Document):
     username = StringField()
     password_hash = StringField()
-    doc_amount = IntField()
+    doc_amount = IntField(default=0)
+    lib_amount = IntField(default=0)
     user_type = StringField()
 
 

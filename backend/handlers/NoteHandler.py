@@ -5,6 +5,7 @@ import os
 def get_note(document_id, user_id):
     user = User.objects(id=str(user_id)).first()
     user_name = user.username
+    print("Usname {}".format(user_name))
     print(document_id)
     doc = Documents.objects(id=str(document_id)).first()
     doc_name = doc.save_name
