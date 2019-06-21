@@ -2,7 +2,7 @@ from backend.handlers import *
 from backend.utils.call_metadata import get_metadata
 from backend.models.db_models import Documents
 
-executor = ThreadPoolExecutor(2)
+executor = ThreadPoolExecutor(4)
 
 
 def upload(stream, user_id, user_name):

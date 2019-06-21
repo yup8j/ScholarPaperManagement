@@ -5,6 +5,7 @@ from backend.resources.oss_control import *
 from backend.resources.notes import *
 from backend.resources.info import *
 from backend.resources.lib import *
+from backend.resources.color import *
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
@@ -19,3 +20,4 @@ api.add_resource(GetInfo, '/getinfo')
 api.add_resource(AddLib, '/addlib')
 api.add_resource(DeleteLib, '/deletelib')
 api.add_resource(GetLib, '/getlib')
+api.add_resource(ColorChange, '/mark')
