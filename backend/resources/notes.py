@@ -15,7 +15,7 @@ class GetNote(API):
         args = parse.parse_args()
         document_id = args['document_id']
         note, code = get_note(document_id=document_id, user_id=user_id)
-        note = note.replace('\n', '<br/>')
+        # note = note.replace('\n', '<br/>')
         self.response = make_response()
         self.response.status_code = code
         self.response = jsonify({"note": str(note)})
