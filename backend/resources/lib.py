@@ -38,3 +38,18 @@ class DeleteLib(API):
         lib_id = args['lib_id']
         self.response.code = delete_lib(user_id=user_id, lib_id=lib_id)
         return self.response
+
+
+class GetLib(API):
+    """
+    查看分类列表, 返回type:0为readlater,1为所有文献,2为普通分类
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        j, c = get_lib(user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response
