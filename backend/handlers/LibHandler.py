@@ -54,3 +54,78 @@ def get_lib(user_id):
         my_response = ''
         code = 403
     return my_response, code
+
+
+from mongoengine import connect
+
+connect(
+    db='test_11',
+    host='mongodb://dds-wz9f23f0cffe4b341504-pub.mongodb.rds.aliyuncs.com:3717,dds-wz9f23f0cffe4b342338-pub.mongodb.rds.aliyuncs.com:3717',
+    username='root',
+    password='qwerty2019()-=',
+    authentication_source='admin',
+    authentication_mechanism='SCRAM-SHA-1',
+    replicaset='mgset-15064123'
+)
+
+
+def get_docs_in_lib(user_id, lib_id, lib_type):
+    if not lib_type == 1:
+        lib_query = Library.objects(id=lib_id).first()
+        list_of_doc = [str(i) for i in lib_query.doc_list]
+        title_list = []
+        mark_list = []
+        fst_author_list = []
+        source_list = []
+        publish_year_list = []
+        for doc_id in list_of_doc:
+            doc_query = Documents.objects(id=doc_id).first()
+            title_list.append(doc_query.metadata.title)
+            mark_list.append(doc_query.color)
+            try:
+                fst_author_list.append(doc_query.metadata.author[0])
+            except Exception as e:
+                print(str(e))
+                fst_author_list.append('-')
+            source_list.append(doc_query.metadata.publish_source)
+            try:
+                publish_year_list.append(doc_query.metadata.publish_date)
+            except Exception as e:
+                print(e)
+                publish_year_list.append('-')
+        final = [{'document_id': d_id, 'title': title, 'mark': mark, 'fst_author': fst_author, 'source': source,
+                  'year': year} for
+                 d_id, title, mark, fst_author, source, year in
+                 zip(list_of_doc, title_list, mark_list, fst_author_list, source_list, publish_year_list)]
+        my_response = {'docs': final}
+        print(my_response)
+        return my_response, 200
+    else:
+        doc_query = Documents.objects(owner_id=user_id)
+        list_of_doc = [str(query.id) for query in doc_query]
+        title_list = []
+        mark_list = []
+        fst_author_list = []
+        source_list = []
+        publish_year_list = []
+        for doc_id in list_of_doc:
+            doc_query = Documents.objects(id=doc_id).first()
+            title_list.append(doc_query.metadata.title)
+            mark_list.append(doc_query.color)
+            try:
+                fst_author_list.append(doc_query.metadata.author[0])
+            except Exception as e:
+                print(str(e))
+                fst_author_list.append('-')
+            source_list.append(doc_query.metadata.publish_source)
+            try:
+                publish_year_list.append(doc_query.metadata.publish_date)
+            except Exception as e:
+                print(e)
+                publish_year_list.append('-')
+        final = [{'document_id': d_id, 'title': title, 'mark': mark, 'fst_author': fst_author, 'source': source,
+                  'year': year} for
+                 d_id, title, mark, fst_author, source, year in
+                 zip(list_of_doc, title_list, mark_list, fst_author_list, source_list, publish_year_list)]
+        my_response = {'docs': final}
+        return my_response, 200

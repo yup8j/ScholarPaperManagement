@@ -133,7 +133,11 @@ def get_metadata(user_id, stream, name):
         author = []
         for i in list(json_data['authors']):
             author.append(i['name'])
-        publish_date = json_data['year']
+        try:
+            publish_date = json_data['year']
+        except Exception as e:
+            print(str(e))
+            publish_date = '-'
         topic = []
         topic_id = []
         for i in list(json_data['topics']):
