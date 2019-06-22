@@ -17,8 +17,10 @@ def upload(stream, user_id, user_name):
         code = 403
     if code == 200:
         doc_id = executor.submit(get_metadata, user_id, stream, name).result()
-        if doc_id == 'Full' or doc_id == 'Error':
+        if doc_id == 'Full':
             code = 403
+        if doc_id == 'Error':
+            code = 405
         return {"id": str(doc_id)}, code
     else:
         return "", code
