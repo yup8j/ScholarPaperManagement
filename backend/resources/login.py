@@ -1,12 +1,13 @@
 from backend.resources import *
 from backend.handlers.LoginHandler import *
 from backend.models.db_models import User
-from flask_jwt_extended import (JWTManager,create_access_token, set_access_cookies, \
+from flask_jwt_extended import (JWTManager, create_access_token, set_access_cookies, \
                                 get_jwt_identity, get_raw_jwt)
 
 ''' 鉴权模块的初始化 '''
 jwt = JWTManager()
 blacklist = set()
+
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
@@ -48,17 +49,15 @@ class LoginAPI(API):
         challenge = args['passwd']
 
         content, code, msg = LogHandler(uname=uname, challenge=challenge)
-
         ''' 生成响应报文 '''
         self.response = make_response()
         if content == None:
             # 错误内容返回
             resp = jsonify({
-                "status_code": code,
                 "message": msg
             })
             self.response = resp
-            self.response.code = code
+            self.response.status_code = code
         else:
             # 生成token并设置响应的cookie
             userid = content['userid']
