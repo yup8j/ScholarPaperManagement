@@ -88,13 +88,12 @@ def get_metadata(user_id, stream, name):
                 user_type = user.user_type
                 user_doc_amount = user.doc_amount
                 user_doc_amount += 1
-
                 if not user_type == 'advanced':
                     if user_doc_amount > 10:
                         return 'Full'
                 user.update(doc_amount=user_doc_amount)
                 new_document = Documents(owner_id=user_id, save_name=name, color=0, save_note=0)
-                new_metadata = Metadata(title=str(name), user_score=0, paper_id='-', author=['-'], publish_date='-',
+                new_metadata = Metadata(title=str(name), user_score=0, paper_id='-', author=[], publish_date='-',
                                         publish_source='-', link_url='-')
                 new_document.metadata = new_metadata
                 new_document.save()
