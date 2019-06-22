@@ -32,7 +32,7 @@ def save_note(document_id, user_id, note_content):
     doc = Documents.objects(id=str(document_id)).first()
     doc_name = doc.save_name
     path = './' + 'md/' + user_name
-    with open('./md/' + user_name + '/' + doc_name + '.md', 'a+') as f:
+    with open('./md/' + user_name + '/' + doc_name + '.md', 'w') as f:
         f.write(note_content)
         f.close()
     code = 200
