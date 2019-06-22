@@ -57,3 +57,12 @@ class EditInfo(API):
             'msg': 'ok'
         }
         return self.response
+
+
+class UpgradeUser(API):
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        self.response.status_code = user_upgrade(user_id=user_id)
+        return self.response

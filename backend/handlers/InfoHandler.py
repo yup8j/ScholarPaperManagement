@@ -1,4 +1,4 @@
-from ..models.db_models import Documents, Metadata, Topic
+from ..models.db_models import Documents, Metadata, Topic, User
 from mongoengine import Q
 
 
@@ -37,3 +37,13 @@ def editInfo(userid, docInfo):
         'msg': 'ok'
     }
     return ret
+
+
+def user_upgrade(user_id):
+    try:
+        User.objects(id=user_id).update_one(set__user_type='advanced')
+        code = 200
+    except Exception as e:
+        print(str(e))
+        code = 403
+    return code
