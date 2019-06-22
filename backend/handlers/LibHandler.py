@@ -161,10 +161,10 @@ def remove_from_lib(document_id, lib_id, user_id):
     将选中文献从分类中移除
     """
     doc_query = Documents.objects(Q(id=document_id)).first()
-    doc_query.update(pull__lib=lib_id)
+    doc_query.update_one(pull__lib=lib_id)
 
     lib_query = Library.objects(Q(id=lib_id) & Q(owner_id=user_id)).first()
-    lib_query.update(pull__doc_list=document_id)
+    lib_query.update_one(pull__doc_list=document_id)
     return 'remove success', 200
 
 
