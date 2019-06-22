@@ -44,7 +44,6 @@ class DeleteDocuments(API):
     """
     彻底删除文献
     """
-    # TODO：完善lib相关部分的删除
     @jwt_required
     def post(self):
         user_id = get_jwt_identity()
