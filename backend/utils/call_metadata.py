@@ -93,8 +93,8 @@ def get_metadata(user_id, stream, name):
                         return 'Full'
                 user.update(doc_amount=user_doc_amount)
                 new_document = Documents(owner_id=user_id, save_name=name, color=0, save_note=0)
-                new_metadata = Metadata(title=str(name), user_score=0, paper_id='-', author=[], publish_date='-',
-                                        publish_source='-', link_url='-')
+                new_metadata = Metadata(title=str(name), user_score=0, paper_id='-', publish_date='-',
+                                        publish_source='-')
                 new_document.metadata = new_metadata
                 new_document.save()
                 return new_document.id
