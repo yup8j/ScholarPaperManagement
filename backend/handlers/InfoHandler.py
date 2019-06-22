@@ -16,3 +16,24 @@ def getInfo(userid, doc_id):
         return docQuery, \
                ",".join([str(topic_id) for topic_id in topic_list]), \
                ",".join([str(name) for name in topic_name_list])
+
+
+def editInfo(userid, docInfo):
+    doc_id = docInfo['document_id']
+    docQuery = Documents.objects(Q(id=doc_id) & Q(owner_id=userid)).first()
+    new_mata = Metadata(
+        title=docInfo['title'],
+        paper_id=docInfo['paper_id'],
+        author=docInfo['author'],
+        publish_date=docInfo['year'],
+        publish_source=docInfo['source'],
+        user_score=docInfo['score']
+    )
+    # Documents.objects(Q(id=doc_id) & Q(owner_id=userid)).update_one(
+    #     set__metadata=new_mata
+    # )
+    ret = {
+        'status_code': 200,
+        'msg': 'ok'
+    }
+    return ret

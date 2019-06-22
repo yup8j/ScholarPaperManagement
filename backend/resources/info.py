@@ -40,3 +40,20 @@ class GetInfo(API):
         self.response = make_response(resp)
         self.response.status_code = 200
         return self.response
+
+
+class EditInfo(API):
+    @jwt_required
+    def post(self):
+        """
+        """
+        ''' 用户鉴权：获得userid '''
+        userid = get_jwt_identity()
+
+        req_json = request.get_json(force=True)
+        editInfo(userid, req_json)
+        self.response = {
+            'status_code': 200,
+            'msg': 'ok'
+        }
+        return self.response

@@ -79,12 +79,95 @@ class GetReadLater(API):
     """
     查看待读列表
     """
-
     @jwt_required
     def post(self):
         user_id = get_jwt_identity()
         self.response = make_response()
         j, c = get_read_later(user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response
+
+
+class AddToLib(API):
+    """
+
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        request.get_json(force=True)
+        parse = reqparse.RequestParser()
+        parse.add_argument('lib_id', type=str)
+        parse.add_argument('document_id', type=str)
+        args = parse.parse_args()
+        document_id = args['document_id']
+        lib_id = args['lib_id']
+        j, c = add_to_lib(document_id=document_id, lib_id=lib_id, user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response
+
+
+class RemoveFromLib(API):
+    """
+
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        request.get_json(force=True)
+        parse = reqparse.RequestParser()
+        parse.add_argument('lib_id', type=str)
+        parse.add_argument('document_id', type=str)
+        args = parse.parse_args()
+        document_id = args['document_id']
+        lib_id = args['lib_id']
+        j, c = remove_from_lib(document_id=document_id, lib_id=lib_id, user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response
+
+
+class AddReadLater(API):
+    """
+    将文献添加到待读列表中
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        request.get_json(force=True)
+        parse = reqparse.RequestParser()
+        parse.add_argument('document_id', type=str)
+        args = parse.parse_args()
+        document_id = args['document_id']
+        j, c = add_read_later(document_id=document_id, user_id=user_id)
+        self.response.code = c
+        self.response = jsonify(j)
+        return self.response
+
+
+class RemoveFromReadLater(API):
+    """
+    将文献从待读列表中移除
+    """
+
+    @jwt_required
+    def post(self):
+        user_id = get_jwt_identity()
+        self.response = make_response()
+        request.get_json(force=True)
+        parse = reqparse.RequestParser()
+        parse.add_argument('document_id', type=str)
+        args = parse.parse_args()
+        document_id = args['document_id']
+        j, c = remove_from_read_later(document_id=document_id, user_id=user_id)
         self.response.code = c
         self.response = jsonify(j)
         return self.response

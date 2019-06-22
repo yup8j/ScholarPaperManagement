@@ -4,6 +4,9 @@ from mongoengine import Q
 
 
 def add_lib(user_id, lib_name):
+    """
+    添加新的分类列表
+    """
     new_lib = Library(owner_id=user_id, lib_name=lib_name)
     try:
         new_lib.save()
@@ -18,6 +21,9 @@ def add_lib(user_id, lib_name):
 
 
 def delete_lib(user_id, lib_id):
+    """
+    删除已有的分类列表
+    """
     d_lib = Library.objects(id=lib_id).first()
     try:
         d_lib.delete()
@@ -30,6 +36,9 @@ def delete_lib(user_id, lib_id):
 
 
 def get_lib(user_id):
+    """
+    获取当前用户的所有分类列表
+    """
     try:
         lib_query = Library.objects(owner_id=user_id)
         lib_id_list = [str(query.id) for query in lib_query]
@@ -57,20 +66,10 @@ def get_lib(user_id):
     return my_response, code
 
 
-from mongoengine import connect
-
-connect(
-    db='test_11',
-    host='mongodb://dds-wz9f23f0cffe4b341504-pub.mongodb.rds.aliyuncs.com:3717,dds-wz9f23f0cffe4b342338-pub.mongodb.rds.aliyuncs.com:3717',
-    username='root',
-    password='qwerty2019()-=',
-    authentication_source='admin',
-    authentication_mechanism='SCRAM-SHA-1',
-    replicaset='mgset-15064123'
-)
-
-
 def get_docs_in_lib(user_id, lib_id, lib_type):
+    """
+    获取某个分类列表下的所有文献
+    """
     if not lib_type == 1:
         lib_query = Library.objects(id=lib_id).first()
         list_of_doc = [str(i) for i in lib_query.doc_list]
@@ -133,9 +132,56 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
 
 
 def get_read_later(user_id):
+    """
+    获取待读列表下的所有文献
+    """
     try:
         lib_query = Library.objects(Q(lib_name="待读列表") & Q(owner_id=user_id)).first()
         j, c = get_docs_in_lib(user_id=user_id, lib_id=lib_query.id, lib_type=0)
+        return j, c
+    except Exception as e:
+        print(str(e))
+        return '', 403
+
+
+def add_to_lib(document_id, lib_id, user_id):
+    """
+    将选中文献添加至选中的分类中
+    """
+    doc_query = Documents.objects(Q(id=document_id)).first()
+    doc_query.update(push__lib=lib_id)
+
+    lib_query = Library.objects(Q(id=lib_id) & Q(owner_id=user_id)).first()
+    lib_query.update(push__doc_list=document_id)
+    return 'add success', 200
+
+
+def remove_from_lib(document_id, lib_id, user_id):
+    """
+    将选中文献从分类中移除
+    """
+    doc_query = Documents.objects(Q(id=document_id)).first()
+    doc_query.update(pull__lib=lib_id)
+
+    lib_query = Library.objects(Q(id=lib_id) & Q(owner_id=user_id)).first()
+    lib_query.update(pull__doc_list=document_id)
+    return 'remove success', 200
+
+
+def add_read_later(document_id, user_id):
+    try:
+        lib_query = Library.objects(Q(lib_name="待读列表") & Q(owner_id=user_id)).first()
+        j, c = add_to_lib(document_id=document_id, lib_id=lib_query.id, user_id=user_id)
+        return j, c
+    except Exception as e:
+        print(str(e))
+        return '', 403
+
+
+def remove_from_read_later(document_id, user_id):
+    try:
+        lib_query = Library.objects(Q(lib_name="待读列表") & Q(owner_id=user_id)).first()
+        j, c = remove_from_lib(document_id=document_id, lib_id=lib_query.id, user_id=user_id)
         return j, c
     except Exception as e:
         print(str(e))

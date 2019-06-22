@@ -1,12 +1,11 @@
-from backend.models.db_models import User
+from backend.models.db_models import User, Library
 from backend.utils.salt import salt_manager
-from hashlib import md5, sha3_256
-import time
+from hashlib import md5
 
 
 def PreLoginHandler(userInfo):
     data = {}
-    uname = userInfo['uname']
+    uname = userInfo['username']
     unameQuery = User.objects(username=uname)
     if len(unameQuery):
         data['id'] = salt_manager.getNewSalt(uname)
@@ -26,14 +25,15 @@ def LogHandler(uname, challenge):
         status_code = 403
         content = None
     else:
+        h_real = None
         password_hash = userquery.password_hash
         salt = salt_manager.matchSalt(uname)
-        h_real = None
+        a = (password_hash.lower() + salt)
         if salt:
-            h_real = md5((password_hash + salt).encode('utf-8'))
-            print(h_real.hexdigest())
+            h_real = md5(a.encode('utf8')).hexdigest()
+            print(h_real)
 
-        challenge = h_real  # 应用时请注释！
+        # challenge = h_real  # 应用时请注释！
         if challenge == h_real:
             # 认证成功
             if not salt_manager.delSalt(uname):
@@ -47,3 +47,28 @@ def LogHandler(uname, challenge):
             message = 'Password verification failed! '
             content = None
     return content, status_code, message
+
+
+def RegisterHandler(username, password_hash):
+    userQuery = User.objects(username=username).first()
+    if userQuery == None:
+        # 创建新的用户记录
+        new_user = User(
+            username=username,
+            password_hash=password_hash,
+            user_type='normal'
+        )
+        new_user.save()
+
+        # 为新用户创建待读列表
+        new_lib = Library(
+            owner_id=new_user.id,
+            lib_name='待读列表'
+        )
+        new_lib.save()
+
+        return 'Register Success', 200
+    else:
+        msg = 'Username exists!'
+        print(msg)
+        return msg, 403
