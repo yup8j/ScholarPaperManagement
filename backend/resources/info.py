@@ -32,6 +32,7 @@ class GetInfo(API):
             'author': author_list,
             'year': metadata.publish_date,
             'source': metadata.publish_source,
+            'score': metadata.user_score,
             'paper_id': metadata.paper_id,
             'link': metadata.link_url,
             'topic': topic_list,
