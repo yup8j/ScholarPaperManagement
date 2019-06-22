@@ -152,7 +152,7 @@ def add_to_lib(document_id, lib_id, user_id):
     doc_query.update(push__lib=lib_id)
 
     lib_query = Library.objects(Q(id=lib_id) & Q(owner_id=user_id)).first()
-    lib_query.update(push__doc_list=document_id)
+    lib_query.update(addToSet__doc_list=document_id)
     return 'add success', 200
 
 
