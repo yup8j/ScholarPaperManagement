@@ -40,6 +40,5 @@ def user_upgrade(user_id):
         User.objects(id=user_id).update_one(set__user_type='advanced')
         code = 200
     except Exception as e:
-        print(str(e))
         code = 403
     return code
