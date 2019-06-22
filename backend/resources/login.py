@@ -58,6 +58,7 @@ class LoginAPI(API):
                 "message": msg
             })
             self.response = resp
+            self.response.code = code
         else:
             # 生成token并设置响应的cookie
             userid = content['userid']
