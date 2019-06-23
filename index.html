@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>文献管理助手</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="css/mdb.min.css" rel="stylesheet"> -->
+  <!-- Fluent Design Bootstrap -->
+  <link rel="stylesheet" href="./css/fluent.css">
+  <!-- Micon icons-->
+  <link rel="stylesheet" href="./css/micon.min.css">
+  <!-- Your custom styles (optional) -->
+  <link href="./css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #313131">
+    <a style="color: white">文献管理助手</a>
+    <ul class="navbar-nav ml-auto nav-flex-icons">
+      <li class="nav-item avatar dropdown">
+        <a class="nav-link dropdown-toggle" id="userName" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <img src="./img/avatar.jpg" class="rounded-circle z-depth-0" alt="avatar image" height="28px" width="28px">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-secondary"
+          aria-labelledby="userName">
+          <a class="dropdown-item waves-effect" onclick="$('#upgradeModal').modal('show');">升级会员</a>
+          <a class="dropdown-item waves-effect" onclick="logout();">退出登录</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div id="main">
+    <div class="row m-0">
+      <div class="p-0 col-xl-2 col-lg-3 col-md-4 col-5">
+        <div id="libs" class="list-group pr-1">
+          <div class="row d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-primary waves-effect px-4 py-2" data-toggle="tooltip" title="创建分类" onclick="$('#newLibModal').modal('show');">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" id="showDelLibBtn" class="btn btn-outline-secondary waves-effect px-4 py-2" data-toggle="tooltip" title="移除分类" onclick="showDelLibBtn(this);">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </div>
+          <ul id="libList" class="px-1 scrollbar-primary m-0 pb-1" style="overflow-y:auto;">
+            <!-- 分类列表渲染 -->
+          </ul>
+        </div>
+      </div>
+  
+      <div id="ltable" class="col-xl-10 col-lg-9 col-md-8 col-7 m-0 p-0" lid="xxooxx00" ondragover="showLUpload(this, event);">
+        <div id="docs" class="scrollbar-primary" style="overflow:auto;">
+          <div id="successBan" style="position:absolute;display: none;width: auto;z-index: 9;" class="alert alert-primary" role="alert">
+            成功
+          </div>
+          <table id="dtDynamicVerticalScrollExample" class="table table-striped table-sm table-hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="th-sm"><div style="width:20px;height:20px;border:solid 1px gray;border-radius:50%;background-color:white;"></div>
+                </th>
+                <th class="th-sm">标题
+                </th>
+                <th class="th-sm">作者
+                </th>
+                <th class="th-sm">来源
+                </th>
+                <th class="th-sm">年份
+                </th>
+                <th class="th-sm">操作
+                </th>
+              </tr>
+            </thead>
+            <tbody id="docTable">
+              <!-- 渲染文献列表的区域 -->
+            </tbody>
+          </table>
+          <!-- 空格区域，美化 -->
+          <div class="row"><br></div>
+        </div>
+      </div>
+
+      <!-- 上传区域 -->
+      <div id="lupload" class="container col-xl-10 col-lg-9 col-md-8 col-7 m-0 py-3" ondragleave="hideLUpload(this);">
+        <div class="upload-drop-zone" id="drop-zone">
+          拖动文件至此来上传到此分类
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情 -->
+  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">详情</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="infoBody">
+          <!-- 信息渲染 -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger waves-effect mr-auto" onclick="delDoc(this);">删除</button>
+          <button type="button" class="btn btn-primary waves-effect" onclick="updateInfo(this);">保存</button>
+          <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除文献的警告 -->
+  <div class="modal fade" id="warnRemDocModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel4">删除文献</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>文献将从云存储中彻底移除。</div>
+          <div>确定要删除这篇文献吗？</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="delDocConfirmed(this);">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除分类的警告 -->
+  <div class="modal fade" id="warnDelLibModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel3">移除分类</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>此分类将被移除，但其中的文献仍会保持在“全部文献”下。</div>
+          <div>确定要移除这个分类吗？</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="delLibConfirmed(this);">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 上传中 -->
+  <div class="modal fade" id="uploadingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel9" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel9">上传中</h5>
+        </div>
+        <div class="modal-body">
+          <div class="progress-cover progress-cover-info">
+            <div class="progress progress-medium fluent-position">
+              <span class="progress-span"></span>
+              <span class="progress-span"></span>
+              <span class="progress-span"></span>
+              <span class="progress-span"></span>
+              <span class="progress-span"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加分类的对话框 -->
+  <div class="modal fade" id="newLibModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">创建新分类</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>新分类的名称</div>
+          <input type="text" id="libName" class="form-control">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="createLib(this);">创建</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 退出登录的对话框 -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel6" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel6">注销</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>确定要注销登录吗？</div>
+          <input type="text" class="form-control">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="logout();">注销</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 达到免费用户上限的对话框 -->
+  <div class="modal fade" id="exceedLimitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel5" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel5">升级用户</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>免费用户只能上传X篇文献，创建X个分类。</div>
+          <div>请付费以继续操作</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="payFor(this);">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 达到免费用户上限的对话框 -->
+  <div class="modal fade" id="upgradeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel7" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel7">免费获得特权！</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>恭喜您！</div>
+          <div>您被选中成为我们的付费资格体验用户，无需付费即可拥有无限量上传资格！</div>
+          <div>点击“确定”，即刻享有。</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="post_updateForFree();">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 网络问题的对话框 -->
+  <div class="modal fade" id="neterrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel7" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel7">网络问题</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>请稍后再试。</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 变更色标 -->
+  <div class="modal fade" id="markModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">更换颜色标记</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="waves-effect" onclick="changeMarkTo(0);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:lightgray;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(1);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:red;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(2);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:yellow;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(3);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:blue;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(4);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:blueviolet;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(5);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:orange;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(6);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:teal;"></div>
+            </div>
+            <div class="waves-effect" onclick="changeMarkTo(7);" style="width: 20px;height:20px; margin: 10px;">
+              <div onmousemove="border(this);" onmouseout="deborder(this);" style="width:20px;height:20px;border-radius:50%;background-color:lime;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="./js/jquery-3.4.0.min.js"></script>
+  <script src="./DataTable/datatables.js"></script>
+  <script src="./js/network.js"></script>
+  <script src="./js/templates.js"></script>
+  <script src="./js/render.js"></script>
+  <script src="./js/classes.js"></script>
+  <script type="text/javascript" src="./js/popper.min.js"></script>
+  <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="./js/mdb.min.js"></script>
+</body>
+
+</html>

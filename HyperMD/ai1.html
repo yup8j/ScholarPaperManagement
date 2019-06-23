@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HyperMD All-in-One !</title>
+  <link href="./../css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./../css/fluent.css">
+  <link rel="stylesheet" href="./assets/basic.css">
+  <script type="text/javascript" src="./jquery-3.4.0.min.js"></script>
+</head>
+
+<style>
+.cm-s-hypermd-light{
+  height: auto!important;
+  margin: 0!important;
+  padding: 0!important;
+}
+</style>
+
+<body style="margin: 0;">
+  <div id="loadingSplash">
+    <p>
+      <i class="loadingIcon"></i>
+    </p>
+    <p>
+      <i>加载MarkDown编辑器</i>
+    </p>
+  </div>
+
+  <!-- 折叠、保存、下载的按钮放置的区域 -->
+  <div id="toolbar" style="height: 36px;width: 100%;margin: 0;position: fixed;top: 0;z-index: 5;">
+    <button id="toNormal" style="display: none">switchToNormal</button>
+    <button id="toHyperMD" style="display: none">switchToHyperMD</button>
+    <button class="btn btn-primary" style="padding-top: 0;padding-bottom: 0;" onclick="save();">保存</button>
+  </div>
+  <div style="height: 36px;width: 100%;margin: 0;"></div>
+
+  <textarea id="myTextarea">
+# Your HyperMD editor is here
+  </textarea>
+
+  <!-- CodeMirror -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror/addon/fold/foldgutter.css">
+
+  <script src="./note.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/lib/codemirror.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/addon/fold/foldcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/addon/fold/foldgutter.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/addon/fold/markdown-fold.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/addon/mode/overlay.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/meta.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/markdown/markdown.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/xml/xml.js"></script>
+  <!-- for embedded HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/stex/stex.js"></script>
+  <!-- for Math TeX Formular -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/yaml/yaml.js"></script>
+  <!-- for Front Matters -->
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror/mode/javascript/javascript.js"></script>
+  <!-- HyperMD -->
+
+  <link rel="stylesheet" href="./mode/hypermd.css">
+  <link rel="stylesheet" href="./theme/hypermd-light.css">
+
+  <script src="./ai1.js"></script>
+
+  <!-- (optional) PowerPacks with 3rd-party libs (Load them before creating editor!) -->
+
+  <!-- MathJax and powerpack/fold-math-with-mathjax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS","output/NativeMML","output/SVG"],
+        extensions: ["MathMenu.js","MathZoom.js", "AssistiveMML.js", "a11y/accessibility-menu.js"],
+        TeX: {
+            extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+        }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax/MathJax.js"></script>
+  <script src="./powerpack/fold-math-with-mathjax.js"></script>
+
+  <!-- marked and powerpack/hover-with-marked -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.js"></script>
+  <script src="./powerpack/hover-with-marked.js"></script>
+
+  <!-- Turndown and powerpack/paste-with-turndown -->
+  <script src="https://cdn.jsdelivr.net/npm/turndown/dist/turndown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turndown-plugin-gfm/dist/turndown-plugin-gfm.js"></script>
+  <script src="./powerpack/paste-with-turndown.js"></script>
+
+  <!-- Upload Images to https://sm.ms/  -->
+  <script src="./powerpack/insert-file-with-smms.js"></script>
+
+  <!-- Use EmojiOne to render emoji  -->
+  <script src="https://cdn.jsdelivr.net/npm/emojione"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione/extras/css/emojione.min.css">
+  <script src="./powerpack/fold-emoji-with-emojione.js"></script>
+
+  <!-- ----------------------------------------------------------------------------------- -->
+
+  <script>
+    document.getElementById('loadingSplash').style.display = 'none' // hide the loading... line
+
+    var myTextarea = document.getElementById('myTextarea')
+    var editor = HyperMD.fromTextArea(myTextarea, {
+      // for code fence highlighting
+      hmdModeLoader: "https://cdn.jsdelivr.net/npm/codemirror/",
+    })
+
+    // and that's all
+    // now you get a `editor` and you can do whatever you want
+    editor.setSize(null, "900px") // set height
+    editor.focus()
+
+    // bind events
+    document.getElementById('toNormal').addEventListener('click', function () {
+      HyperMD.switchToNormal(editor)
+    }, false)
+
+    document.getElementById('toHyperMD').addEventListener('click', function () {
+      HyperMD.switchToHyperMD(editor)
+    }, false)
+  </script>
+
+</body>
+
+</html>
