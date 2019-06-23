@@ -117,3 +117,9 @@ server {
 启动nginx即可
 
 [Demo地址](http://39.108.137.227/gateway.html)
+
+![图2](readme_resource/pic2.png)
+
+![图3](readme_resource/pic3.png)
+
+![图4](readme_resource/pic4.png)
