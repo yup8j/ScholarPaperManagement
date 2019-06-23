@@ -1,2 +1,7 @@
 .idea/
 *.pdf
+venv/
+*.pyc
+*.md
+*.xml
+venv_python/
