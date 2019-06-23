@@ -27,11 +27,12 @@ cd ScholarPaperManagement
 
 ### mongodb配置
 
-```
+```shell
 vim run.py
 ```
 
 ```python
+from mongoengine import connect
 connect(
     db='',
     host='',
@@ -45,9 +46,8 @@ connect(
 
 ### oss配置
 
-```
+```shell
 vim backend/utils/oss.py
-
 ```
 
 参考[阿里云 oss python sdk 指南](https://help.aliyun.com/document_detail/32027.html)
@@ -56,7 +56,7 @@ vim backend/utils/oss.py
 
 推荐使用虚拟环境
 
-```
+```shell
 (venv) pip install -r requirements.txt
 (venv) pip install gunicorn
 (venv) gunicorn -c gunicorn.py run:application & > out.log  
@@ -68,20 +68,20 @@ vim backend/utils/oss.py
 
 #### 克隆前端目录
 
-```
+```shell
 cd /usr/share/nginx/html/
 git clone https://github.com/forturnme/DoCollet.git
 ```
 
 #### 配置nginx
 
-```
+```shell
 vim /etc/nginx/nginx.conf 
 ```
 
 配置文件如下
 
-```
+```shell
 server {
         listen       80 default_server;
         listen       [::]:80 default_server;
