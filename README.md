@@ -1,24 +1,9 @@
 # 学术文献管理系统
 
-## Branch
-
-- master：主分支
-- Xu
-- Long
-- Shi
-
-## Requirements
-
-Python
-
-```
-requirements.txt
-```
-
-JavaScript
+学术文献管理助手
 
 ## 系统设计
 
-![0515-系统图](docs/0515.png)
+![系统设计图](readme_resource/pic1.png)
 
 ##用例
