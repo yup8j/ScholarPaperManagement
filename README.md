@@ -19,7 +19,7 @@
 
 ### 克隆到本地
 
-```
+```shell
 git clone https://github.com/yup8j/ScholarPaperManagement.git
 
 cd ScholarPaperManagement
