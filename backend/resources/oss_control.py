@@ -8,12 +8,12 @@ class UploadDocuments(API):
     @jwt_required
     def post(self):
         user_id = get_jwt_identity()
-        print("User id {}".format(user_id))
         parse = reqparse.RequestParser()
         self.response = make_response()
         parse.add_argument('data', type=werkzeug.datastructures.FileStorage, location='files')
         args = parse.parse_args()
         stream = args['data'].stream
+        print(type(stream))
         j, c = upload(stream=stream, user_id=user_id, user_name='testname')
         self.response.status_code = c
         if c == 200:

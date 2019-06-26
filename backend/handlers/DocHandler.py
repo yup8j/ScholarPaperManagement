@@ -48,12 +48,16 @@ def delete_document(document_id, user_id):
             delete_topic.update_one(pull__doc_list=doc_id)
     except Exception as e:
         print(str(e))
+        code = 403
+        return code
     try:
         for lib in lib_id:
             delete_lib = Library.objects(id=lib)
             delete_lib.update_one(pull__doc_list=doc_id)
     except Exception as e:
         print(str(e))
+        code = 403
+        return code
     delete_doc.delete()
     try:
         bucket.delete_object(user_id + '/' + doc_name + '.pdf')
