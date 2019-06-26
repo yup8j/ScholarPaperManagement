@@ -5,13 +5,16 @@ from hashlib import md5
 
 def PreLoginHandler(userInfo):
     data = {}
-    uname = userInfo['username']
-    unameQuery = User.objects(username=uname)
-    if len(unameQuery):
-        data['id'] = salt_manager.getNewSalt(uname)
-        status_code = 200
+    if 'username' not in userInfo:
+        status_code = 404
     else:
-        status_code = 403
+        uname = userInfo['username']
+        unameQuery = User.objects(username=uname)
+        if len(unameQuery):
+            data['id'] = salt_manager.getNewSalt(uname)
+            status_code = 200
+        else:
+            status_code = 403
 
     return data, status_code
 
@@ -70,5 +73,4 @@ def RegisterHandler(username, password_hash):
         return 'Register Success', 200
     else:
         msg = 'Username exists!'
-        print(msg)
         return msg, 403
