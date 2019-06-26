@@ -83,16 +83,17 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
             title_list.append(doc_query.metadata.title)
             mark_list.append(doc_query.color)
             try:
-                fst_author_list.append(doc_query.metadata.author[0])
+                if doc_query.metadata.author[0]:
+                    fst_author_list.append(doc_query.metadata.author[0])
             except Exception as e:
                 print(str(e))
-                fst_author_list.append('-')
+                fst_author_list = ['-']
             source_list.append(doc_query.metadata.publish_source)
             try:
                 publish_year_list.append(doc_query.metadata.publish_date)
             except Exception as e:
                 print(e)
-                publish_year_list.append('-')
+                publish_year_list = ['-']
         final = [{'document_id': d_id, 'title': title, 'mark': mark, 'fst_author': fst_author, 'source': source,
                   'year': year} for
                  d_id, title, mark, fst_author, source, year in
@@ -113,7 +114,8 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
             title_list.append(doc_query.metadata.title)
             mark_list.append(doc_query.color)
             try:
-                fst_author_list.append(doc_query.metadata.author[0])
+                if doc_query.metadata.author[0]:
+                    fst_author_list.append(doc_query.metadata.author[0])
             except Exception as e:
                 print(str(e))
                 fst_author_list.append('-')
