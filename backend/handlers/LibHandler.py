@@ -110,7 +110,11 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
         source_list = []
         publish_year_list = []
         for doc_id in list_of_doc:
-            doc_query = Documents.objects(id=doc_id).first()
+            try:
+                doc_query = Documents.objects(id=doc_id).first()
+            except Exception as e:
+                print(str(e))
+                return '', 403
             title_list.append(doc_query.metadata.title)
             mark_list.append(doc_query.color)
             try:
@@ -131,6 +135,7 @@ def get_docs_in_lib(user_id, lib_id, lib_type):
                  zip(list_of_doc, title_list, mark_list, fst_author_list, source_list, publish_year_list)]
         my_response = {'docs': final}
         return my_response, 200
+
 
 
 def get_read_later(user_id):

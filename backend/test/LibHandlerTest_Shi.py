@@ -25,6 +25,10 @@ class TestLibHandler(unittest.TestCase):
     def test_get_docs(self):
         resp, code = get_docs_in_lib(user_id=user_id, lib_id='1', lib_type=1)
         self.assertEqual(code, 200)
+        resp, code = get_docs_in_lib(user_id=user_id, lib_id='5d0f29a33e02f9e99c246718', lib_type=0)
+        self.assertEqual(code, 200)
+        resp, code = get_docs_in_lib(user_id=user_id, lib_id='5d12e9b3902096ec18b637f5', lib_type=2)
+        self.assertEqual(code, 200)
 
 if __name__ == '__main__':
     unittest.main()
