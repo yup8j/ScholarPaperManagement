@@ -1,4 +1,11 @@
+import unittest
+from backend.handlers.DocHandler import *
+import pdfminer
 from mongoengine import connect
+from backend.handlers.NoteHandler import *
+from backend.handlers.ColorHandler import *
+from backend.handlers.LibHandler import *
+
 
 connect(
     db='test_11',
