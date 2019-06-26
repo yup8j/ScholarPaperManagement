@@ -1,6 +1,6 @@
 from backend.handlers.LoginHandler import *
-from hashlib import md5
 from python_wrap_cases import wrap_case
+from hashlib import md5
 import unittest
 
 
