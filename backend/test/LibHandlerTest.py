@@ -14,7 +14,7 @@ test_lib_id = '5d0e6d6ebe0e70cfe16257f3'    # 自然语言
 
 
 @wrap_case
-class TestLibHandler(unittest.TestCase):
+class TestLibModule(unittest.TestCase):
     def test_add_lib(self):
         new_lib_id, code = add_lib(user_id=user_id, lib_name=lib_name)
         self.assertEqual(code, 200)
