@@ -34,12 +34,3 @@ def editInfo(userid, docInfo):
     )
     msg = 'save edition!'
     return msg, 200
-
-
-def user_upgrade(user_id):
-    try:
-        User.objects(id=user_id).update_one(set__user_type='advanced')
-        code = 200
-    except Exception as e:
-        code = 403
-    return code
