@@ -62,6 +62,7 @@ class TestInfoModule(unittest.TestCase):
             'author': ['a', 'b'],
             'year': '2018',
             'source': 'xxx',
+            'link_url': 'https://www.baidu.com',
             'score': '10'
         }
         editInfo(userid=self.user_id, docInfo=doc_info)
@@ -73,6 +74,7 @@ class TestInfoModule(unittest.TestCase):
             'author': ['a', 'b'],
             'publish_date': '2018',
             'publish_source': 'xxx',
+            'link_url': 'https://www.baidu.com',
             'user_score': 10
         }
         print('== Metadata ==\n', Q.metadata.to_json())
