@@ -50,7 +50,6 @@ class TestInfoModule(unittest.TestCase):
         self.assertEquals(t_list.split(','), t_res)
         self.assertEquals(tname_list.split(','), tname_res)
 
-
     def test_edit(self):
         print('\n============== test edit ==============')
         # Article: testname_1561196656
@@ -62,7 +61,8 @@ class TestInfoModule(unittest.TestCase):
             'author': ['a', 'b'],
             'year': '2018',
             'source': 'xxx',
-            'score': '10'
+            'score': '10',
+            'link_url': 'www.baidu.com'
         }
         editInfo(userid=self.user_id, docInfo=doc_info)
         # 查看修改的信息
