@@ -26,20 +26,11 @@ def editInfo(userid, docInfo):
         author=docInfo['author'],
         publish_date=docInfo['year'],
         publish_source=docInfo['source'],
-        user_score=int(docInfo['score']),
-        link_url=docInfo['link_url']
+        link_url = docInfo['link_url'],
+        user_score=int(docInfo['score'])
     )
     Documents.objects(Q(id=doc_id) & Q(owner_id=userid)).update_one(
         set__metadata=new_mata
     )
     msg = 'save edition!'
     return msg, 200
-
-
-def user_upgrade(user_id):
-    try:
-        User.objects(id=user_id).update_one(set__user_type='advanced')
-        code = 200
-    except Exception as e:
-        code = 403
-    return code

@@ -61,8 +61,13 @@ class TestInfoModule(unittest.TestCase):
             'author': ['a', 'b'],
             'year': '2018',
             'source': 'xxx',
+<<<<<<< HEAD:backend/test/info.py
             'score': '10',
             'link_url': 'www.baidu.com'
+=======
+            'link_url': 'https://www.baidu.com',
+            'score': '10'
+>>>>>>> 814dd4454591bdbc25cda4c5796915bad1de9f0e:backend/test/InfoHandlerTest.py
         }
         editInfo(userid=self.user_id, docInfo=doc_info)
         # 查看修改的信息
@@ -73,6 +78,7 @@ class TestInfoModule(unittest.TestCase):
             'author': ['a', 'b'],
             'publish_date': '2018',
             'publish_source': 'xxx',
+            'link_url': 'https://www.baidu.com',
             'user_score': 10
         }
         print('== Metadata ==\n', Q.metadata.to_json())

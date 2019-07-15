@@ -74,3 +74,12 @@ def RegisterHandler(username, password_hash):
     else:
         msg = 'Username exists!'
         return msg, 403
+
+
+def user_upgrade(user_id):
+    try:
+        User.objects(id=user_id).update_one(set__user_type='advanced')
+        code = 200
+    except Exception as e:
+        code = 403
+    return code
